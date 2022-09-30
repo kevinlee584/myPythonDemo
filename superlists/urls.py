@@ -21,4 +21,4 @@ urlpatterns = [
     path('', list_views.home_page, name='home'),
     path('lists/', include(list_urls))
     # path('admin/', admin.site.urls),
-]
+] 
