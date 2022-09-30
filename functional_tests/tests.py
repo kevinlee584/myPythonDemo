@@ -34,7 +34,6 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys('Buy peacock feathers')
         inputbox.send_keys(Keys.ENTER)
 
-
         WebDriverWait(self.browser, 10).until(
             expected_conditions.presence_of_element_located((By.ID,'id_list_table'))) 
 
@@ -46,7 +45,7 @@ class NewVisitorTest(LiveServerTestCase):
 
 
         WebDriverWait(self.browser, 10).until(
-            expected_conditions.presence_of_element_located((By.ID,'id_list_table'))) 
+            expected_conditions.staleness_of(self.browser.find_element(By.ID,'id_list_table'))) 
         edith_list_url = self.browser.current_url
 
         self.assertRegex(edith_list_url, '/lists/.+')
@@ -65,6 +64,8 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
 
+        WebDriverWait(self.browser, 10).until(
+            expected_conditions.presence_of_element_located((By.ID,'id_list_table'))) 
         francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.')
         self.assertNotEqual(francis_list_url, edith_list_url)
