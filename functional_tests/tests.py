@@ -5,8 +5,27 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import unittest
+import sys
 
 class NewVisitorTest(StaticLiveServerTestCase):
+
+
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
+                return
+        
+        super().setUpClass()
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                return
+        super().tearDownClass()
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -21,7 +40,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Home page test
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         header_text = self.browser.find_element(By.TAG_NAME,'h1').text
         self.assertIn('To-Do', self.browser.title)
         self.assertIn('To-Do', header_text)
@@ -59,7 +78,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.browser = webdriver.Firefox()
 
         # check list not show
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element(By.ID, 'id_new_item').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('make a fly', page_text)
@@ -79,7 +98,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
     
     def test_layout_and_styling(self):
 
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         self.browser.set_window_size(1024, 768)
 
         inputbox = self.browser.find_element(By.ID, 'id_new_item')
