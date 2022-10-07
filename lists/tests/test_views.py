@@ -55,6 +55,17 @@ class ListViewTest(TestCase):
 
         self.assertRedirects(response, '/lists/%d/' % (correct_list.id,))
 
+    def test_alidation_errors_end_up_on_lists_page(self):
+        list_ = List.objects.create()
+        response = self.client.post(
+            '/lists/%d/' % (list_.id,),
+            data={'item_text': ''}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'list.html')
+        excepted_error = escape("You can't have an empty list item")
+        self.assertContains(response, excepted_error)
+
 class NewListTest(TestCase):
     
     def test_saving_a_POST_request(self):
@@ -100,4 +111,7 @@ class NewListTest(TestCase):
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
 
-    
+    def test_invalid_list_items_arent_saved(self):
+        self.client.post('/list/new', data={'item_text': ''})
+        self.assertEqual(List.objects.count(), 0)
+        self.assertEqual(Item.objects.count(), 0)

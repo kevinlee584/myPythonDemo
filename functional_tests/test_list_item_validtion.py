@@ -25,11 +25,13 @@ class ItemVaildaionTest(FunctionalTest):
 
         self.browser.find_element(By.ID, 'id_new_item').send_keys(Keys.ENTER)
         WebDriverWait(self.browser, 10).until(
-            EC.staleness_of(self.browser.find_element(By.ID,'id_list_table'))) 
+            EC.presence_of_element_located((By.CSS_SELECTOR,'.has-error'))) 
         self.check_for_row_in_list_table('1: Buy milk')
         error = self.browser.find_element(By.CSS_SELECTOR, '.has-error')
         self.assertEqual(error.text, "You can't have an empty list item")
 
         self.browser.find_element(By.ID, 'id_new_item').send_keys('Make tea', Keys.ENTER)
+        WebDriverWait(self.browser, 10).until(
+            EC.staleness_of(self.browser.find_element(By.ID,'id_list_table'))) 
         self.check_for_row_in_list_table('1: Buy milk')
         self.check_for_row_in_list_table('2: Make tea')
