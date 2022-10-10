@@ -4,6 +4,8 @@ from lists.form import ItemForm, EMPTY_ITEM_ERROR
 
 class ItemFormTest(TestCase):
 
+
+
     def test_form_item_input_has_placehlder_and_css_classes(self):
         form = ItemForm()
         self.assertIn('placeholder="Enter a to-do item"', form.as_p())
@@ -15,3 +17,4 @@ class ItemFormTest(TestCase):
         self.assertEqual(
             form.errors['text'], 
             [EMPTY_ITEM_ERROR])
+        self.fail(form)
