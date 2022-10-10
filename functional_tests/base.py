@@ -37,6 +37,10 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.assertIn(row_text, [row.text for row in rows])
 
 
+    def get_item_input_box(self):
+        return self.browser.find_element(By.ID, 'id_text')
+
+
 class NewVisitorTest(FunctionalTest):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
