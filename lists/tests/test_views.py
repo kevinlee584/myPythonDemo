@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.utils.html import escape
 from django.http import HttpRequest
 from django.template.loader import render_to_string
+
+from unittest import skip
 from lists.models import Item, List
 from lists.views import home_page
 from lists.form import ItemForm, EMPTY_ITEM_ERROR
@@ -106,6 +108,19 @@ class ListViewTest(TestCase):
         response = self.client.get('/lists/%d/' % (list_.id,))
         self.assertIsInstance(response.context['form'], ItemForm)
         self.assertContains(response, 'name="text"')
+
+    @skip
+    def test_duplicate_item_validation_errors_end_up_on_lists_page(self):
+        list1 = List.objects.create()
+        item1 = Item.objects.create(list=list1, text='texty')
+        response = self.client.post(
+            '/lists/%d/' % (list1.id,), 
+            data={'text': 'texty'}
+        )
+        excepted_error = escape("You've already got this in your list")
+        self.assertContains(response, excepted_error)
+        self.assertTemplateUsed(response, 'list.html')
+        self.assertEqual(Item.objects.all().count(), 1)
 
 class NewListTest(TestCase):
     

@@ -39,11 +39,14 @@ class ItemVaildaionTest(FunctionalTest):
     def test_cannot_add_deplicate_items(self):
 
         self.browser.get(self.server_url)
-        self.get_item_input_box().send('Buy wellies', Keys.ENTER)
+        self.get_item_input_box().send_keys('Buy wellies', Keys.ENTER)
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.ID,'id_list_table'))) 
         self.check_for_row_in_list_table('1: Buy wellies')
 
         self.get_item_input_box().send_keys('Buy wellies', Keys().ENTER)
-
+        WebDriverWait(self.browser, 10).until(
+            EC.staleness_of(self.browser.find_element(By.ID,'id_list_table'))) 
         self.check_for_row_in_list_table('1: Buy wellies')
         error = self.browser.find_element(By.CSS_SELECTOR, '.has-error')
         self.assertEqual(error.text, "You've already got this in your list")
