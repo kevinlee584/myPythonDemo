@@ -8,8 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from .base import FunctionalTest
 
-
-class ItemVaildaionTest(FunctionalTest):
+class ItemValidationTest(FunctionalTest):
     
     def get_error_element(self):
         exception = None

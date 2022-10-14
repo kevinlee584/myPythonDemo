@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+        <meta charset="utf-8">
+        <title>Javascript tests</title>
+        <link rel="stylesheet" href="qunit.css">
+    </head>
+
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture">
+            <form>
+                <input name="test" placeholder="Enter"/>
+                <div class="has-error">Error text</div>
+            </form>
+        </div>
+        
+        <script src="qunit.js"></script>
+        <script src="https://code.jquery.com/jquery.min.js"></script>
+        <script src="/static/list.js"></script>
+        <script>
+            /*global $, test, equal */
+            
+            test("smoke test", function() {
+                equal(1, 1, "Meths works!");
+                $('.has-error').hide();
+                equal($('.has-error').is(':visible'), false)
+
+            });
+            test("smoke test 2", function() {
+                equal($('.has-error').is(':visible'), true)
+                $('.has-error').hide();
+                equal($('.has-error').is(':visible'),  false)
+            });
+            test("errors should be hidden on keypress", function() {
+                $('input').trigger('keypress');
+                equal($('.has-error').is(':visible'), false)
+            })
+            test("error not be hidden unless there is a keypress", function() {
+                equal($('.has-error').is(':visible'), true)
+            })
+        </script>
+        
+    </body>
+</html>
