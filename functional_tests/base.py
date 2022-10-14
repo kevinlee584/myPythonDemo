@@ -1,11 +1,15 @@
+import sys
+from unittest import skip
+
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import (NoSuchElementException,
+                                        StaleElementReferenceException)
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from unittest import skip
-import sys
+from selenium.webdriver.support.wait import WebDriverWait
+
 
 class FunctionalTest(StaticLiveServerTestCase):
     @classmethod
@@ -32,10 +36,20 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser.quit()
 
     def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element(By.ID, 'id_list_table')
-        rows = table.find_elements(By.TAG_NAME, 'tr')
-        self.assertIn(row_text, [row.text for row in rows])
+        exception = None
 
+        for i in range(5):
+            try:
+                table = self.browser.find_element(By.ID, 'id_list_table')
+                rows = table.find_elements(By.TAG_NAME, 'tr')
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except NoSuchElementException as e:
+                exception = e
+            except StaleElementReferenceException as e:
+                exception = e
+            self.browser.implicitly_wait(0.25)
+        raise exception
 
     def get_item_input_box(self):
         return self.browser.find_element(By.ID, 'id_text')

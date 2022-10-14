@@ -1,9 +1,10 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
+
 from .base import FunctionalTest
+
 
 class NewVisitorTest(FunctionalTest):
 
@@ -20,22 +21,13 @@ class NewVisitorTest(FunctionalTest):
             'Enter a to-do item')
         
         #Post request 1
-        inputbox.send_keys('Buy peacock feathers')
-        inputbox.send_keys(Keys.ENTER)
-
-        WebDriverWait(self.browser, 10).until(
-            EC.presence_of_element_located((By.ID,'id_list_table'))) 
-
+        inputbox.send_keys('Buy peacock feathers', Keys.ENTER)
         self.check_for_row_in_list_table('1: Buy peacock feathers')
 
         # Post request 2
         inputbox = self.get_item_input_box()
-        inputbox.send_keys('Use peacock feathers to make a fly')
-        inputbox.send_keys(Keys.ENTER)
+        inputbox.send_keys('Use peacock feathers to make a fly', Keys.ENTER)
 
-
-        WebDriverWait(self.browser, 10).until(
-            EC.staleness_of(self.browser.find_element(By.ID,'id_list_table'))) 
         edith_list_url = self.browser.current_url
 
         self.assertRegex(edith_list_url, '/lists/.+')
@@ -54,11 +46,8 @@ class NewVisitorTest(FunctionalTest):
 
         # Post request 3
         inputbox = self.get_item_input_box()
-        inputbox.send_keys('Buy milk')
-        inputbox.send_keys(Keys.ENTER)
+        inputbox.send_keys('Buy milk', Keys.ENTER)
 
-        WebDriverWait(self.browser, 10).until(
-            EC.presence_of_element_located((By.ID,'id_list_table'))) 
         francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.')
         self.assertNotEqual(francis_list_url, edith_list_url)
